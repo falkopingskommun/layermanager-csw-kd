@@ -1,2 +1,5 @@
 # layermanager-csw
-Slightly altered origo-map/layermanager to fit a csw-backend
+Slightly altered https://origo-map/layermanager to fit a csw-backend
+Works as a plugin in the same way. Instructions to follow.
+
+
