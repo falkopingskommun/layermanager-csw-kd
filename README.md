@@ -3,6 +3,11 @@ Slightly altered https://github.com/origo-map/layermanager to fit a csw-backend
 Works as a plugin in the same way. Instructions to follow.
 
 #### Example usage of Layermanager as plugin
+
+First you have to create a subfolder in the Origo-map directory named plugins/ where you can put the built version of layermanager-csv.
+Then you configure the index.html like in the example.
+
+
 The plugin can be loaded like this in an html-file:
 ```
         <link href="plugins/layermanager.css" rel="stylesheet">
