@@ -123,7 +123,7 @@ const AddLayerOverlay = function AddLayerOverlay(options) {
       this.dispatch('render');
     },
     render() {
-      return `<li id="${this.getId()}" class="${cls}">${ButtonsHtml}</li>`;
+      return `<li title="drop" id="menuDropSlot" class="${cls} dropzone"></li><li id="${this.getId()}" class="${cls}">${ButtonsHtml}</li>`;
     }
   });
 };
