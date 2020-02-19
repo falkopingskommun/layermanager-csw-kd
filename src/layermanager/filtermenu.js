@@ -97,7 +97,7 @@ const FilterMenu = function FilterMenu(options = {}) {
     render() {
       return `<div id="${this.getId()}" class="${cls}" style="${style}">
                 ${filterBtn.render()}
-                  <h6 class="text-weight-bold text-grey-dark">Teman</h6>
+                  <h6 style="width: 200px" class="text-weight-bold text-grey-dark">Teman</h6>
                   <ul>
                     ${renderButtons(buttons)}
                   </ul>

@@ -6,7 +6,7 @@ const LayerSearch = function LayerSearch(options = {}) {
     placeholder = 'Sök lager i katalogen',
     style: styleOptions = {
       height: '2.125rem',
-      width: 'calc(100% - 4rem)'
+      width: 'calc(100% - 2rem)'
     }
   } = options;
 
