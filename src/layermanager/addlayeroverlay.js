@@ -64,7 +64,7 @@ const AddLayerOverlay = function AddLayerOverlay(options) {
   });
 
   //Button in search
-  const addButtonSearch = Origo.ui.Button({
+  /*const addButtonSearch = Origo.ui.Button({
     cls: 'round compact primary icon-small margin-x-smaller',
     style: {
       'align-self': 'center',
@@ -74,8 +74,8 @@ const AddLayerOverlay = function AddLayerOverlay(options) {
     iconStyle: {
       fill: '#fff'
     }
-  });
-  buttons.push(addButton);
+  }); */
+  buttons.push(addButton); 
 
   ButtonsHtml = `${layerIcon.render()}${label.render()}${addButton.render()}`;
 
@@ -93,6 +93,7 @@ const AddLayerOverlay = function AddLayerOverlay(options) {
       } else {
         parentEl.appendChild(el);
       }
+      /*
       let searchAddButton = `
       <li>
         <div class="suggestion" style="background: #bee8ff;cursor: initial;">
@@ -117,7 +118,7 @@ const AddLayerOverlay = function AddLayerOverlay(options) {
           let search = layermanager.getElementsByTagName('input')[0]
           search.value = searchText
         })
-      })
+      })*/
       this.addComponents(buttons);
       this.addComponent(label);
       this.dispatch('render');
