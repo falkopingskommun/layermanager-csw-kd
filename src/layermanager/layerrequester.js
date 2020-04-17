@@ -19,6 +19,7 @@ const layerRequester = async function layerRequester({
   function parseThemes(){
     let activeThemes = ''
     themes.forEach(theme => {
+      theme = `${theme}`.replace(/ /g,'_');
       activeThemes += `<ogc:PropertyIsLike matchCase="false" wildCard="%" singleChar="_" escapeChar="\">
           <ogc:PropertyName>subject</ogc:PropertyName>
           <ogc:Literal>%${theme}%</ogc:Literal>
