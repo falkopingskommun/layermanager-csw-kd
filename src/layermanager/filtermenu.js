@@ -18,9 +18,11 @@ const FilterMenu = function FilterMenu(options = {}) {
   const style = Origo.ui.dom.createStyle(styleSettings);
   const cls = `${clsOptions} padding-x no-grow no-shrink filter-menu filter-menu-hide`.trim();
   let menu;
+  let filterBtn;
   let buttons;
-
-  let filterBtn = Origo.ui.Button({
+  console.log(types);
+  if (types.length > 0) {
+  filterBtn = Origo.ui.Button({
     cls: 'control absolute icon-small light bottom-center filter-menu-theme-btn',
     click(){
       if(menu.classList.contains('filter-menu-hide')){
@@ -35,8 +37,8 @@ const FilterMenu = function FilterMenu(options = {}) {
     text: "Teman",
     icon: "#ic_chevron_left_24px"
 
-  })
-
+  })}
+console.log(types.length >0);
   function createButtons(titles, menu){
     let buttons = [];
     titles.forEach(currentTitle => {
@@ -74,9 +76,10 @@ const FilterMenu = function FilterMenu(options = {}) {
   return Origo.ui.Component({
     onInit() {
       buttons = createButtons(types, this);
+	  if (types.length > 0) {
       this.addComponents(buttons);
       this.addComponent(filterBtn);
-    },
+	  }},
     getActiveFilters(){
       let activeFilters = []
       buttons.forEach((button) =>{
@@ -95,13 +98,17 @@ const FilterMenu = function FilterMenu(options = {}) {
       this.dispatch('render');
     },
     render() {
+		if (types.length > 0) {
       return `<div id="${this.getId()}" class="${cls}" style="${style}">
                 ${filterBtn.render()}
                   <h6 style="width: 200px" class="text-weight-bold text-grey-dark">Teman</h6>
                   <ul>
                     ${renderButtons(buttons)}
                   </ul>
-              </div>`;
+		</div>`;
+		} else {
+			return `<div></div>`
+		}
     }
   });
 }
