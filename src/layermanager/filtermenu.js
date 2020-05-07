@@ -20,7 +20,6 @@ const FilterMenu = function FilterMenu(options = {}) {
   let menu;
   let filterBtn;
   let buttons;
-  console.log(types);
   if (types.length > 0) {
   filterBtn = Origo.ui.Button({
     cls: 'control absolute icon-small light bottom-center filter-menu-theme-btn',
@@ -38,7 +37,6 @@ const FilterMenu = function FilterMenu(options = {}) {
     icon: "#ic_chevron_left_24px"
 
   })}
-console.log(types.length >0);
   function createButtons(titles, menu){
     let buttons = [];
     titles.forEach(currentTitle => {
