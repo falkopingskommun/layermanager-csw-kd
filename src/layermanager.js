@@ -4,6 +4,7 @@ import LayerListStore from './layermanager/layerliststore';
 import Main from './layermanager/main';
 import layerRequester from './layermanager/layerrequester';
 import AddLayerOverlay from './layermanager/addlayeroverlay';
+import { onAddDraggable, onRemoveDraggable } from './layermanager/dragdrop';
 
 const Layermanager = function Layermanager(options = {}) {
   let {
@@ -69,6 +70,14 @@ const Layermanager = function Layermanager(options = {}) {
       viewer = e.target;
       viewer.on('active:layermanager', setActive.bind(this));
       viewer.addGroup(group)
+      viewer.on("addlayer", (l) => {
+        let addedLayer = viewer.getLayer(l.layerName); 
+        if(addedLayer.get('group') == group.name) onAddDraggable(addedLayer);
+      });
+      viewer.getMap().getLayers().on('remove', (e) => {
+        let removedLayer = e.element;
+        if(removedLayer.get('group') == group.name) onRemoveDraggable(removedLayer)
+      });
       let groups = viewer.getControlByName('legend').getGroups()
       let layermanagerGroup = groups.find(cmp => cmp.name === group.name)
       layermanagerGroup.addOverlay(AddLayerOverlay({viewer, position: "bottom", url}))
