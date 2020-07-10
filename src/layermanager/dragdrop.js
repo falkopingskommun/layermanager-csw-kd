@@ -2,6 +2,7 @@ import 'drag-drop-touch';
 
 const addedLayers = [];
 const zIndexStart = 500;
+const dropZone = '<li title="drop" id="dropSlot" class="dropzone"></li>';
 let draggedElement;
 let zIndexCounter = zIndexStart;
 
@@ -54,7 +55,7 @@ const addDropSupport = function addDropSupport(el) {
         let nextSiblingTitle = '';
         if (dropIndex !== -1) {
           targetNeighbourTitle = contentFromChildEl(event.target.previousSibling);
-          nextSiblingTitle = contentFromChildEl(event.target.nextSibling);
+          //nextSiblingTitle = contentFromChildEl(event.target.nextSibling);
         } else {
           dropIndex = Array.prototype.indexOf.call(parent.childNodes, parent.lastElementChild) - 1;
           targetNeighbourTitle = contentFromChildEl(parent.childNodes[dropIndex].previousSibling);
@@ -127,13 +128,7 @@ const addDropSupport = function addDropSupport(el) {
 
         // childnodes is a reference to parent.childNodes
         const childnodes = parent.childNodes;
-        const menu = parent.lastElementChild;
-        // removes addlayeroverlay
-        parent.removeChild(menu);
-        const menuDropChild = parent.lastElementChild;
         const dropSlot = parent.firstElementChild;
-        // removes dropzone at bottom
-        parent.removeChild(menuDropChild);
 
         const childSorted = [];
         zIndexCounter = zIndexStart + addedLayers.length;
@@ -161,9 +156,6 @@ const addDropSupport = function addDropSupport(el) {
             if (child.getAttribute('id') === 'dropSlot') {
               parent.removeChild(child);
             }
-            if (child.getAttribute('title') === 'menuDropChild') {
-              parent.removeChild(child);
-            }
           });
         });
         let dropSlotClone = dropSlot.cloneNode(true);
@@ -173,7 +165,6 @@ const addDropSupport = function addDropSupport(el) {
         childSorted.forEach((child) => {
           parent.appendChild(child);
         });
-        parent.appendChild(menu);
         dropSlotClone = dropSlot.cloneNode(true);
         addDropSupport(dropSlotClone);
         parent.insertBefore(dropSlotClone, parent.childNodes[0]);
@@ -189,15 +180,27 @@ const addDragSupport = function addDragSupport(el) {
   el.addEventListener('dragstart', (event) => {
     draggedElement = event.target;
     event.target.style.opacity = 0.3;
-
-    const menuDropSlot = document.getElementById('menuDropSlot');
-    if (menuDropSlot != null) {
-      addDropSupport(menuDropSlot);
-    }
   }, false);
 
   el.addEventListener('dragend', (event) => { event.target.style.opacity = ''; }, false);
 };
+
+export const InitDragAndDrop = function InitDragAndDrop(group){
+  const allSpanTagElements = document.getElementsByTagName('span');
+  let overlayEl;
+  for (let i = 0; i < allSpanTagElements.length; i += 1) {
+    const item = allSpanTagElements[i];
+    if (item.textContent === (`${group.title}`)) {
+      //Some not-so-good traversal in dom to get to correct element to append
+      overlayEl = item.parentElement.nextElementSibling.firstElementChild;
+      break;
+    }
+  }
+  let dropzoneEl = Origo.ui.dom.html(dropZone);
+  dropzoneEl = dropzoneEl.childNodes[0];
+  addDropSupport(dropzoneEl);
+  overlayEl.appendChild(dropzoneEl)
+}
 
 export const onAddDraggable = function onAddDraggable(layer) {
   const allDivTagElements = document.getElementsByTagName('div');
@@ -215,7 +218,7 @@ export const onAddDraggable = function onAddDraggable(layer) {
   overlayEl.setAttribute('draggable', 'true');
   overlayEl.setAttribute('ondragstart', "event.dataTransfer.setData('text/plain',null)");
   const overlayParentEl = overlayEl.parentElement;
-  let dropzoneEl = Origo.ui.dom.html('<li title="drop" id="dropSlot" class="dropzone"></li>');
+  let dropzoneEl = Origo.ui.dom.html(dropZone);
   dropzoneEl = dropzoneEl.childNodes[0];
   addDropSupport(dropzoneEl);
   addDragSupport(overlayEl);

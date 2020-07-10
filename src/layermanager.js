@@ -3,7 +3,7 @@ import FilterMenu from './layermanager/filtermenu';
 import LayerListStore from './layermanager/layerliststore';
 import Main from './layermanager/main';
 import layerRequester from './layermanager/layerrequester';
-import { onAddDraggable, onRemoveDraggable } from './layermanager/dragdrop';
+import { onAddDraggable, onRemoveDraggable, InitDragAndDrop } from './layermanager/dragdrop';
 
 const Layermanager = function Layermanager(options = {}) {
   let {
@@ -83,6 +83,7 @@ const Layermanager = function Layermanager(options = {}) {
       viewer = e.target;
       viewer.on('active:layermanager', setActive.bind(this));
       viewer.addGroup(group)
+      InitDragAndDrop(group);
       viewer.on("addlayer", (l) => {
         let addedLayer = viewer.getLayer(l.layerName); 
         if(addedLayer.get('group') == group.name) onAddDraggable(addedLayer);
