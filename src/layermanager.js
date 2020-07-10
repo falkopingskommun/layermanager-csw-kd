@@ -3,7 +3,6 @@ import FilterMenu from './layermanager/filtermenu';
 import LayerListStore from './layermanager/layerliststore';
 import Main from './layermanager/main';
 import layerRequester from './layermanager/layerrequester';
-import AddLayerOverlay from './layermanager/addlayeroverlay';
 import { onAddDraggable, onRemoveDraggable } from './layermanager/dragdrop';
 
 const Layermanager = function Layermanager(options = {}) {
@@ -38,6 +37,20 @@ const Layermanager = function Layermanager(options = {}) {
     style: {
       right: '1rem',
       top: '1rem'
+    }
+  });
+
+  const openBtn = Origo.ui.Button({
+    cls: 'round compact primary icon-small margin-x-smaller',
+    click() {
+      viewer.dispatch('active:layermanager');
+    },
+    style: {
+      'align-self': 'center'
+    },
+    icon: '#o_add_24px',
+    iconStyle: {
+      fill: '#fff'
     }
   });
 
@@ -78,9 +91,8 @@ const Layermanager = function Layermanager(options = {}) {
         let removedLayer = e.element;
         if(removedLayer.get('group') == group.name) onRemoveDraggable(removedLayer)
       });
-      let groups = viewer.getControlByName('legend').getGroups()
-      let layermanagerGroup = groups.find(cmp => cmp.name === group.name)
-      layermanagerGroup.addOverlay(AddLayerOverlay({viewer, position: "bottom", url}))
+      let legend = viewer.getControlByName('legend');
+      legend.addButtonToTools(openBtn)
       main = Main({ 
         viewer,
         sourceFields,
