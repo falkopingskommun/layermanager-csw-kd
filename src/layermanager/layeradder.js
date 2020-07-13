@@ -105,7 +105,8 @@ const LayerAdder = function LayerAdder(options = {}) {
             removable: true,
             source: srcUrl,
             abstract: abstractText,
-            style: legendurl
+            style: legendIconUrl,
+            theme
           };
           layer = Object.assign(layer, layersDefaultProps);
           const srcObject = {};
@@ -116,7 +117,7 @@ const LayerAdder = function LayerAdder(options = {}) {
               icon: { src: legendIconUrl },
               extendedLegend: theme
             }]];
-          viewer.addStyle(legendurl, style);
+          viewer.addStyle(legendIconUrl, style);
           viewer.addLayer(layer);
           this.setState('remove');
         });

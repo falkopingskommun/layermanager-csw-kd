@@ -4,6 +4,7 @@ import LayerListStore from './layermanager/layerliststore';
 import Main from './layermanager/main';
 import layerRequester from './layermanager/layerrequester';
 import { onAddDraggable, onRemoveDraggable, InitDragAndDrop } from './layermanager/dragdrop';
+import { GetAddedLayers, ReadAddedLayersFromMapState } from './layermanager/mapstatelayers';
 
 const Layermanager = function Layermanager(options = {}) {
   let {
@@ -28,7 +29,7 @@ const Layermanager = function Layermanager(options = {}) {
   let isActive = false
   let backDropId = Origo.ui.cuid();
   let searchText = ''
-
+  const name = 'layermanager';
   const clearCls = 'absolute round small icon-smaller grey-lightest';
   const icon = '#ic_clear_24px';
   const closeButton = Origo.ui.Button({
@@ -77,8 +78,12 @@ const Layermanager = function Layermanager(options = {}) {
     }
   }
 
+  function addAddedLayersToMapState(state){
+    state[name] = GetAddedLayers(viewer, group);
+  }
+
   return Origo.ui.Component({
-    name: 'layermanager',
+    name,
     onAdd(e) {
       viewer = e.target;
       viewer.on('active:layermanager', setActive.bind(this));
@@ -108,6 +113,11 @@ const Layermanager = function Layermanager(options = {}) {
       this.addComponent(filterMenu);
       filterMenu.on("filter:change", main.onUpdateLayerList)
       closeButton.on('click', onClickClose.bind(this));
+
+      let sharemap = viewer.getControlByName('sharemap');
+      sharemap.addParamsToGetMapState(name, addAddedLayersToMapState);
+      let sharedLayers = viewer.getUrlParams()[name]; 
+      if(sharedLayers) ReadAddedLayersFromMapState(sharedLayers, viewer);
     },
     getActiveFilters(){
       return filterMenu.getActiveFilters()
