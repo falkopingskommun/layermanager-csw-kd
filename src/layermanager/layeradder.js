@@ -91,7 +91,7 @@ const LayerAdder = function LayerAdder(options = {}) {
       const abstractText = (abstract == 'no description') ? '' : abstract;
       if (src[src.length - 1] == '?') srcUrl = src.substring(0, src.length - 1); // some extra '?' from request breaks the url
       const legendurl = `${src}service=WMS&version=1.1.0&request=GetLegendGraphic&layer=${layerId}&format=application/json&scale=401`;
-      const legendIconUrl = `${src}service=WMS&version=1.1.0&request=GetLegendGraphic&layer=${layerId}&FORMAT=image/png&scale=401`;
+      const legendIconUrl = `${src}service=WMS&version=1.1.0&request=GetLegendGraphic&layer=${layerId}&FORMAT=image/png&scale=401&legend_options=dpi:600`;
       let theme = false;
       fetch(legendurl)
         .then((res) => res.json())
