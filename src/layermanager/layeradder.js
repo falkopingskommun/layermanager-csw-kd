@@ -120,6 +120,9 @@ const LayerAdder = function LayerAdder(options = {}) {
           viewer.addStyle(legendIconUrl, style);
           viewer.addLayer(layer);
           this.setState('remove');
+        }).catch((err) => {
+          let errormsg = viewer.getControlByName('layermanager').getErrorMsg();
+          swal("Något gick fel", errormsg, "warning");
         });
     }
   };

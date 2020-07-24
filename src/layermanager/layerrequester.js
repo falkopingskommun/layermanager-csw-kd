@@ -85,7 +85,6 @@ const layerRequester = async function layerRequester({
     } else {
       //Parse the csw fetch to XML and get specific properties for layers
       let xml = new DOMParser().parseFromString(data,"text/xml")
-      console.log(xml)
       let records = xml.getElementsByTagName("csw:Record");
       //Dont do anything if empty
       if (records.length == 0 && extend){

@@ -5,6 +5,7 @@ import Main from './layermanager/main';
 import layerRequester from './layermanager/layerrequester';
 import { onAddDraggable, onRemoveDraggable, InitDragAndDrop } from './layermanager/dragdrop';
 import { GetAddedLayers, ReadAddedLayersFromMapState } from './layermanager/mapstatelayers';
+import swal from 'sweetalert';
 
 const Layermanager = function Layermanager(options = {}) {
   let {
@@ -18,7 +19,8 @@ const Layermanager = function Layermanager(options = {}) {
     group,
     layersDefaultProps,
     noSearchResultText,
-    types
+    types,
+    addLayerErrorMsg
   } = options;
  
   const cls = `${clsSettings} flex fade-in box center-center padding-y-small padding-left layer-manager overflow-hidden`.trim();
@@ -84,6 +86,9 @@ const Layermanager = function Layermanager(options = {}) {
 
   return Origo.ui.Component({
     name,
+    getErrorMsg(){
+      return addLayerErrorMsg
+    },
     onAdd(e) {
       viewer = e.target;
       viewer.on('active:layermanager', setActive.bind(this));
