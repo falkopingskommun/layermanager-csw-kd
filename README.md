@@ -66,7 +66,8 @@ The plugin can be loaded like this in an html-file:
                         src:{
                             "name": "src"
                         }
-                    }
+                    },
+                    addLayerErrorMsg: "There was a problem trying to add a layer. You are welcome to report this to SUPPORT@SUPPORT.com"
                 });
                 viewer.addComponent(layermanager);
                 
