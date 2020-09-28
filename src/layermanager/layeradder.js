@@ -96,7 +96,7 @@ const LayerAdder = function LayerAdder(options = {}) {
       fetch(legendurl)
         .then((res) => res.json())
         .then((json) => {
-          if ((json.Legend[0].rules.length > 1) || (json.Legend.length > 1)) {
+          if ((json.Legend[0].rules.length > 1) || (json.Legend.length > 1 || json.Legend[0].rules[0].symbolizers[0].Raster.colormap.entries.length > 1)) {
             theme = true;
           }
           let layer = {
