@@ -16,7 +16,8 @@ export const GetAddedLayers = function GetAddedLayers(viewer, group){
     infoFormat: layer.get('infoFormat'),
     group: layer.get('group'),
     theme: layer.get('theme'),
-    opacity: layer.get('opacity')
+    opacity: layer.get('opacity'),
+    searchable: layer.get('searchable')
     };
     addedLayers.push(addedLayer);
   });
