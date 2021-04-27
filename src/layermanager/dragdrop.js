@@ -1,7 +1,7 @@
 import 'drag-drop-touch';
 
 const addedLayers = [];
-const zIndexStart = 500;
+const zIndexStart = 5;
 const dropZone = '<li title="drop" id="dropSlot" class="dropzone"></li>';
 let draggedElement;
 let zIndexCounter = zIndexStart;
