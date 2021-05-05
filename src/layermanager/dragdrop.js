@@ -1,7 +1,7 @@
 import 'drag-drop-touch';
 
 const addedLayers = [];
-const zIndexStart = 5;
+const zIndexStart = 0.1;
 const dropZone = '<li title="drop" id="dropSlot" class="dropzone"></li>';
 let draggedElement;
 let zIndexCounter = zIndexStart;
@@ -80,9 +80,9 @@ const addDropSupport = function addDropSupport(el) {
         const zIndexList = [];
 
         if (dropBelow) {
-          layerDragged.setZIndex(layerTarget.getZIndex() - 1);
+          layerDragged.setZIndex(layerTarget.getZIndex() - 0.01);
         } else {
-          layerDragged.setZIndex(layerTarget.getZIndex() + 1);
+          layerDragged.setZIndex(layerTarget.getZIndex() + 0.01);
         }
 
         zIndexList.push(layerDragged.getZIndex());
@@ -93,25 +93,25 @@ const addDropSupport = function addDropSupport(el) {
         //sets the z indexes on all layers based on the drag and drop locations
         otherLayers.forEach((element) => {
           if (element.getZIndex() === layerTargetZIndex) {
-            element.setZIndex(element.getZIndex() - 1);
+            element.setZIndex(element.getZIndex() - 0.01);
             zIndexList.push(element.getZIndex());
           } else if (element.getZIndex() < layerTargetZIndex && !zIndexList.includes(element.getZIndex())) {
-            element.setZIndex(element.getZIndex() - 1);
+            element.setZIndex(element.getZIndex() - 0.01);
             zIndexList.push(element.getZIndex());
           } else if (element.getZIndex() < layerTargetZIndex && zIndexList.includes(element.getZIndex())) {
-            let z = element.getZIndex() - 1;
+            let z = element.getZIndex() - 0.01;
             while (zIndexList.includes(z)) {
-              z -= 1;
+              z -= 0.01;
             }
             element.setZIndex(z);
             zIndexList.push(element.getZIndex());
           } else if (element.getZIndex() > layerDraggedZIndex && !zIndexList.includes(element.getZIndex())) {
-            element.setZIndex(element.getZIndex() + 1);
+            element.setZIndex(element.getZIndex() + 0.01);
             zIndexList.push(element.getZIndex());
           } else if (element.getZIndex() > layerDraggedZIndex && zIndexList.includes(element.getZIndex())) {
-            let z = element.getZIndex() + 1;
+            let z = element.getZIndex() + 0.01;
             while (zIndexList.includes(z)) {
-              z += 1;
+              z += 0.01;
             }
             element.setZIndex(z);
             zIndexList.push(element.getZIndex());
@@ -119,6 +119,7 @@ const addDropSupport = function addDropSupport(el) {
             console.log(`Failed to sort z Index on layer: ${element.getProperties().title}`);
           }
         });
+
         // sort on zindex, highest zindex on index 0
         addedLayers.sort((a, b) => {
           if (a.getZIndex() < b.getZIndex()) return 1;
@@ -131,11 +132,11 @@ const addDropSupport = function addDropSupport(el) {
         const dropSlot = parent.firstElementChild;
 
         const childSorted = [];
-        zIndexCounter = zIndexStart + addedLayers.length;
+        zIndexCounter = zIndexStart + (addedLayers.length/100);
 
         addedLayers.forEach((layer) => {
           layer.setZIndex(zIndexCounter);
-          zIndexCounter -= 1;
+          zIndexCounter -= 0.01;
 
           // for IE support
           if (window.NodeList && !NodeList.prototype.forEach) {
@@ -169,7 +170,7 @@ const addDropSupport = function addDropSupport(el) {
         addDropSupport(dropSlotClone);
         parent.insertBefore(dropSlotClone, parent.childNodes[0]);
 
-        zIndexCounter = zIndexStart + addedLayers.length;
+        zIndexCounter = zIndexStart + (addedLayers.length / 100);
       }
     }
   }, false);
@@ -212,7 +213,7 @@ export const onAddDraggable = function onAddDraggable(layer) {
       break;
     }
   }
-  zIndexCounter += 1;
+  zIndexCounter += 0.01;
   layer.setZIndex(zIndexCounter);
   addedLayers.push(layer);
   overlayEl.setAttribute('draggable', 'true');
