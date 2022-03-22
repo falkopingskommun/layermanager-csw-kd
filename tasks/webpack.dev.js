@@ -1,11 +1,13 @@
 const { merge } = require('webpack-merge');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const common = require('./webpack.common.js');
+
 
 module.exports = merge(common, {
   output: {
-    path: `${__dirname}/../build/js`,
+    path: `${__dirname}/../../origo/build/plugins/`,
     publicPath: '/build/js',
-    filename: 'lm.js',
+    filename: 'layermanager.js',
     libraryTarget: 'var',
     libraryExport: 'default',
     library: 'Layermanager'
@@ -29,6 +31,9 @@ module.exports = merge(common, {
       }      
     ]
   },  
+  plugins: [
+    new WriteFilePlugin()
+  ],  
   devServer: {
     contentBase: './',
     port: 9008
