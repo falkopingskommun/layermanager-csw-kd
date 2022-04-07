@@ -1,11 +1,12 @@
-import'Origo';
+import 'Origo';
+import swal from 'sweetalert';
 import FilterMenu from './layermanager/filtermenu';
 import LayerListStore from './layermanager/layerliststore';
 import Main from './layermanager/main';
 import layerRequester from './layermanager/layerrequester';
 import { onAddDraggable, onRemoveDraggable, InitDragAndDrop } from './layermanager/dragdrop';
 import { GetAddedLayers, ReadAddedLayersFromMapState } from './layermanager/mapstatelayers';
-import swal from 'sweetalert';
+
 
 const Layermanager = function Layermanager(options = {}) {
   let {
@@ -48,6 +49,7 @@ const Layermanager = function Layermanager(options = {}) {
     click() {
       viewer.dispatch('active:layermanager');
     },
+    title: 'Lägg till lager',
     style: {
       'align-self': 'center'
     },

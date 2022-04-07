@@ -6,10 +6,10 @@ const LayerAdder = function LayerAdder(options = {}) {
     layerId,
     cls: clsSettings = 'round compact boxshadow-subtle text-inverse icon-small',
     addIcon = '#ic_add_24px',
-    removeIcon = '#ic_remove_24px',
+    mapIcon = '#ic_map_24px',
     sourceUrl,
     type = 'layer',
-    title,
+    title = 'Lägg till lager',
     src,
     viewer,
     abstract = '',
@@ -18,9 +18,10 @@ const LayerAdder = function LayerAdder(options = {}) {
 
   const layer = viewer.getLayer(layerId);
   const group = viewer.getGroup(layerId);
-  const initialState = layer || group ? 'remove' : 'initial';
-  const initialIcon = initialState === 'initial' ? addIcon : removeIcon;
-  const initialBgCls = initialState === 'initial' ? 'primary' : 'danger';
+  const initialState = layer || group ? 'inactive' : 'initial';
+  const initialIcon = initialState === 'initial' ? addIcon : mapIcon;
+  const initialBgCls = initialState === 'initial' ? 'primary' : 'grey';
+  const initialToolTip = initialState === 'initial' ? 'Lägg till lager' : 'Finns i kartan';
   const cls = `${clsSettings} layeradder ${initialBgCls}`.trim();
   const isValid = src == 'no src' ? 'hidden' : 'visible'; // decides hide or show button, depends if src exist for layer
 
@@ -58,33 +59,22 @@ const LayerAdder = function LayerAdder(options = {}) {
 
   const initial = function initial() {
     this.setIcon(addIcon);
+    this.title = 'Lägg till lager';
     const el = document.getElementById(this.getId());
-    el.classList.remove('danger');
+    el.classList.remove('grey');
     el.classList.add('primary');
   };
 
-  const remove = function remove() {
-    this.setIcon(removeIcon);
+  const inactive = function inactive() {
+    this.setIcon(mapIcon);
     const el = document.getElementById(this.getId());
+    el.children[0].children[0].children[0].innerHTML =  'Finns i kartan';
     el.classList.remove('primary');
-    el.classList.add('danger');
+    el.classList.add('grey');
   };
 
   const click = async function click() {
-    if (this.getState() === 'remove') {
-      const layer = viewer.getLayer(layerId);
-      if (layer) {
-        viewer.getMap().removeLayer(layer);
-        this.setState('initial');
-        return 'intial';
-      }
-      const group = viewer.getGroup(layerId);
-      if (group) {
-        viewer.removeGroup(layerId);
-        this.setState('initial');
-        return 'initial';
-      }
-    } else if (this.getState() === 'initial') {
+    if (this.getState() === 'initial') {
       this.setState('loading');
       // add layers with same format as in config-json
       let srcUrl = src;
@@ -120,7 +110,7 @@ const LayerAdder = function LayerAdder(options = {}) {
             }]];
           viewer.addStyle(legendIconUrl, style);
           viewer.addLayer(layer);
-          this.setState('remove');
+          this.setState('inactive');
         }).catch((err) => {
           let errormsg = viewer.getControlByName('layermanager').getErrorMsg();
           swal("Något gick fel", errormsg, "warning");
@@ -131,15 +121,16 @@ const LayerAdder = function LayerAdder(options = {}) {
   return Origo.ui.Button({
     style: `visibility: ${isValid}`, // hide button if you cant add it
     click,
+    title: initialToolTip,
     cls,
     icon: initialIcon,
     iconStyle: {
       fill: '#fff'
     },
-    validStates: ['initial', 'remove'],
+    validStates: ['initial', 'inactive'],
     methods: {
       initial,
-      remove
+      inactive
     },
     state: initialState
   });
