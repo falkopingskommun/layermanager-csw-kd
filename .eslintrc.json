@@ -3,6 +3,10 @@
     "env": {
       "browser": true
     },
+      "parserOptions": {
+        "ecmaVersion": 2020
+      }
+    ,
     "rules": {
       "comma-dangle": [
         "error",
