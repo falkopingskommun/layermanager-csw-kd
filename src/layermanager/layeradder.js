@@ -16,8 +16,8 @@ const LayerAdder = function LayerAdder(options = {}) {
     layersDefaultProps
   } = options;
 
-  const layer = viewer.getLayer(layerId);
-  const group = viewer.getGroup(layerId);
+  const layer = viewer.getLayer(layerId.split(':').pop());
+  const group = viewer.getGroup(layerId.split(':').pop());
   const initialState = layer || group ? 'inactive' : 'initial';
   const initialIcon = initialState === 'initial' ? addIcon : mapIcon;
   const initialBgCls = initialState === 'initial' ? 'primary' : 'grey';
@@ -89,7 +89,6 @@ const LayerAdder = function LayerAdder(options = {}) {
 		  const value = json.Legend[0]?.rules[0]?.symbolizers[0]?.Raster?.colormap?.entries;
           if ((json.Legend[0].rules.length > 1) || (json.Legend.length > 1)) {theme = true;}
       else if (value) {theme = true;}
-      
           let layer = {
             name: layerId,
             title,
