@@ -12,12 +12,13 @@ const layerRequester = async function layerRequester({
   themes = []
 } = {}) {
   function parseThemes() {
+    // FM - Ändrat till dc:description istället för dc:subject och lagt på lla: innan thisTheme
     let activeThemes = '';
     themes.forEach(theme => {
       const thisTheme = `${theme}`.replace(/ /g, '_');
       activeThemes += `<ogc:PropertyIsLike matchCase="false" wildCard="%" singleChar="_" escapeChar="\">
-          <ogc:PropertyName>dc:subject</ogc:PropertyName>
-          <ogc:Literal>%${thisTheme}%</ogc:Literal>
+          <ogc:PropertyName>dc:description</ogc:PropertyName>
+          <ogc:Literal>%lla: ${thisTheme}%</ogc:Literal>
         </ogc:PropertyIsLike>`;
     });
     return activeThemes;
@@ -30,10 +31,24 @@ const layerRequester = async function layerRequester({
       filter += '<ogc:And>';
       themesActive = true;
     }
-    filter += `<ogc:PropertyIsLike matchCase="false" wildCard="%" singleChar="_" escapeChar="\">
+    // FM - Ändrat filter parameter tar nu endast med geoserver lager med gdp i namnet
+    filter += `<ogc:And>
+                <ogc:PropertyIsLike matchCase="false" wildCard="%" singleChar="_" escapeChar="\">
                 <ogc:PropertyName>dc:title</ogc:PropertyName>
                 <ogc:Literal>%${searchText}%</ogc:Literal>
-              </ogc:PropertyIsLike>`;
+              </ogc:PropertyIsLike>
+              <ogc:Or>
+              <ogc:PropertyIsLike matchCase="false" wildCard="%" singleChar="_" escapeChar="\">
+              <ogc:PropertyName>dc:identifier</ogc:PropertyName>
+              <ogc:Literal>%gdp%</ogc:Literal>
+            </ogc:PropertyIsLike>
+            <ogc:PropertyIsLike matchCase="false" wildCard="%" singleChar="_" escapeChar="\">
+            <ogc:PropertyName>dc:identifier</ogc:PropertyName>
+            <ogc:Literal>%gdpk%</ogc:Literal>
+          </ogc:PropertyIsLike>
+          </ogc:Or>
+          </ogc:And>`;
+
     if (themesActive) {
       filter += (themes.length === 1) ? `${parseThemes()}</ogc:And>` : `<ogc:Or>${parseThemes()}</ogc:Or></ogc:And>`;
     }
@@ -59,8 +74,8 @@ const layerRequester = async function layerRequester({
       xmlns:apiso="http://www.opengis.net/cat/csw/apiso/1.0">
       <csw:Query typeNames="csw:Record">
         <csw:ElementSetName>full</csw:ElementSetName>
-        <csw:Constraint version="1.1.0">
-          ${buildFilter()}
+        <csw:Constraint version="1.1.0">  
+        ${buildFilter()}
         </csw:Constraint>
         <ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">
                 <ogc:SortProperty>
@@ -74,14 +89,16 @@ const layerRequester = async function layerRequester({
   const { error, data } = await readAsync(fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/xml' },
-    body }).then((rsp) => rsp.text()));
-    // const { error, data } = await readAsync(fetch(url).then(response => response.json()));
+    body
+  }).then((rsp) => rsp.text()));
+  // const { error, data } = await readAsync(fetch(url).then(response => response.json()));
   if (error) {
     console.log(error);
   } else {
     // Parse the csw fetch to XML and get specific properties for layers
     const xml = new DOMParser().parseFromString(data, 'text/xml');
     const records = xml.getElementsByTagName('csw:Record');
+
     // Dont do anything if empty
     if (records.length === 0 && extend) {
       return;
@@ -95,11 +112,15 @@ const layerRequester = async function layerRequester({
       // let correctUri =  records[i].querySelector(`[protocol='OGC:WMS-1.1.1-http-get-map']`)
       const correctUri = records[i].querySelector('[scheme=\'OGC:WMS\']');
       // let layerId = correctUri ? correctUri.getAttribute('name') : "No id"
+
       let layerId = records[i].getElementsByTagName('dc:identifier')[0].childNodes[0];
       let title = records[i].getElementsByTagName('dc:title')[0].childNodes[0];
       let description = records[i].getElementsByTagName('dc:description')[0].childNodes[0];
       const theme = 'no theme';
       let src = 'no src';
+
+
+
       if (correctUri) {
         if (correctUri.childNodes[0]) {
           if (correctUri.childNodes[0].nodeValue) {
@@ -119,6 +140,13 @@ const layerRequester = async function layerRequester({
         src
       });
     }
+
+    /* FMB - Annan lösning kan tas bort på sikt
+    console.log("bf", layers)
+    layers.filter(x => x.layerId.startsWith('aktor') || x.layerId.startsWith('-') || x.layerId.startsWith('baskarta') || x.layerId.startsWith('extern') || x.layerId.startsWith('feab') || x.layerId.startsWith('intern') || x.layerId.startsWith('oversiktsplan') || x.layerId.startsWith('proj') || x.layerId.startsWith('tvs')) .forEach(x => layers.splice(layers.indexOf(x), 1));
+    console.log("ef", layers.length)
+    FMS */
+
     // if to extend current list, used for "load more on scroll"-effect
     if (extend) { layers = LayerListStore.getList().concat(layers); }
     LayerListStore.updateList(layers);
