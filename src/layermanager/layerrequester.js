@@ -1,5 +1,6 @@
 import LayerListStore from './layerliststore';
 import readAsync from './readasync';
+import 'Origo'; // FM
 
 const requestAll = () => data;
 
@@ -11,6 +12,9 @@ const layerRequester = async function layerRequester({
   extend = false,
   themes = []
 } = {}) {
+
+  let legend_layers ='yes'; // FM
+
   function parseThemes() {
     // FM - Ändrat till dc:description istället för dc:subject och lagt på lla: innan thisTheme
     let activeThemes = '';
@@ -22,15 +26,25 @@ const layerRequester = async function layerRequester({
         </ogc:PropertyIsLike>`;
     });
     return activeThemes;
+
   }
 
   function buildFilter() {
+    let layer_checker = document.getElementById('layer_checker') // FM Layer checker button 
     let filter = '<ogc:Filter>';
     let themesActive = false;
     if (themes.length !== 0) {
       filter += '<ogc:And>';
       themesActive = true;
     }
+    // FMB 
+    if (layer_checker.checked) {
+      legend_layers ='yes'
+    }
+    else {
+      legend_layers ='no'
+    }
+    // FMS
     // FM - Ändrat filter parameter tar nu endast med geoserver lager med gdp i namnet
     filter += `<ogc:And>
                 <ogc:PropertyIsLike matchCase="false" wildCard="%" singleChar="_" escapeChar="\">
@@ -140,6 +154,18 @@ const layerRequester = async function layerRequester({
         src
       });
     }
+
+    // FMB
+    layers.forEach((el) => {
+      {
+        let curr_layer = origo.api().getLayer(el.layerId.split(':').pop());
+        const initialState = curr_layer ? 'inactive' : 'initial';
+        if (initialState == 'inactive' && legend_layers == 'no') {
+          layers = layers.filter(x => x.layerId !== el.layerId)
+        }
+      }
+    })
+    // FMS
 
     /* FMB - Annan lösning kan tas bort på sikt
     console.log("bf", layers)

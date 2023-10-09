@@ -22,7 +22,7 @@ const LayerAdder = function LayerAdder(options = {}) {
   const initialState = layer || group ? 'inactive' : 'initial';
   const initialIcon = initialState === 'initial' ? addIcon : mapIcon;
   const initialBgCls = initialState === 'initial' ? 'primary' : 'grey';
-  const initialToolTip = initialState === 'initial' ? 'Lägg till lager' : 'Finns i kartan';
+  const initialToolTip = initialState === 'initial' ? 'Lägg till lager' : 'Finns i kartan, tryck för att tända lagret';
   const cls = `${clsSettings} layeradder ${initialBgCls}`.trim();
   const isValid = src == 'no src' ? 'hidden' : 'visible'; // decides hide or show button, depends if src exist for layer
 
@@ -69,12 +69,23 @@ const LayerAdder = function LayerAdder(options = {}) {
   const inactive = function inactive() {
     this.setIcon(mapIcon);
     const el = document.getElementById(this.getId());
-    el.children[0].children[0].children[0].innerHTML = 'Finns i kartan';
+    el.children[0].children[0].children[0].innerHTML = 'Finns i kartan, tryck för att tända lagret';
     el.classList.remove('primary');
     el.classList.add('grey');
   };
 
   const click = async function click() {
+    // FMB - turns on the layer that is already included in the map legend
+    if (this.getState() === 'inactive') {
+
+      let regex = /[^:]+$/;
+      let clicked_layer = src.match(regex);
+      let view_clicked_layer = viewer.getLayer(clicked_layer[0])
+      view_clicked_layer.setVisible(true)
+    }
+    // FMS
+
+
     if (this.getState() === 'initial') {
       this.setState('loading');
       // add layers with same format as in config-json

@@ -51,8 +51,10 @@ const FilterMenu = function FilterMenu(options = {}) {
             document.getElementById(this.getId()).style.backgroundColor = "";
             this.setState('inactive');  
           }
-          let searchText = document.getElementById(menu.getId()).parentNode.getElementsByTagName("input")[0].value
-          menu.dispatch("filter:change", { searchText })
+          // FM changed to searchText2 needed for legend_layer button
+          // let searchText = document.getElementById(menu.getId()).parentNode.getElementsByTagName("input")[0].value
+          let searchText2 = document.getElementById(menu.getId()).parentNode.getElementsByTagName("li")[0].innerText
+          menu.dispatch("filter:change", { searchText2 })
         },
         text: currentTitle,
         state: 'inactive',
@@ -96,9 +98,12 @@ const FilterMenu = function FilterMenu(options = {}) {
       this.dispatch('render');
     },
     render() {
-		if (types.length > 0) {
-      return `<div id="${this.getId()}" class="${cls}" style="${style}">
+		if (types.length > 0) { // FM layer_checker added below
+      return `<div id="${this.getId()}" class="${cls}" style="${style}"> 
                 ${filterBtn.render()}
+                <div class="falk_small_black"><input type="checkbox" id="layer_checker" name="layer_checker" checked />
+                Sök på alla lager
+                <p class="falk_smallest_grey">(inkluderar befintliga kartlager)</p></div>
                   <h6 style="width: 200px" class="text-weight-bold text-grey-dark">Teman</h6>
                   <ul>
                     ${renderButtons(buttons)}
